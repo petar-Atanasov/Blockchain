@@ -112,7 +112,7 @@ blockSizeLimit = 5 # Arbitnary number of transaction per block
 while txnBuffer:
     # Gather a set of valid trnsactions for inclusion
     txnList = []
-    while txnBuffer & len(txnList) < blockSizeLimit:
+    while txnBuffer and len(txnList) < blockSizeLimit:
         newTxn = txnBuffer.pop()
         validTxn = isValid(newTxn, state) # returns false if txn is invalid
         
