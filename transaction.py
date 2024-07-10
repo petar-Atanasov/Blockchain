@@ -1,6 +1,7 @@
 import hashlib
 import json
 import random
+import sys
 random.seed(0)
 from hashFun import hashMe
 
@@ -80,4 +81,53 @@ genesisBlock = {
 # convert the genesis block to sorted JSON format
 genesisBlockStr = json.dumps(genesisBlock,sort_keys=True)
 
-print(genesisBlockStr)
+#!SECTION
+# print(genesisBlockStr)
+
+chain = [genesisBlock]
+
+def makeBlock(txns, chain):
+    parentBlock = chain[-1]
+    parentHash = parentBlock['hash']
+    blockNumber = parentBlock['contents']['blockNumber'] + 1
+    txnCount = len(txns)
+    blockContents = {
+        'blockNumber': blockNumber,
+        'parentHash': parentHash,
+        'txnCount':len(txns),
+        'txns':txns
+         }
+    blockHash = hashMe(blockContents)
+    block = {
+        'hash': blockHash,
+        'contents':blockContents
+    }
+    
+    return block
+
+blockSizeLimit = 5 # Arbitnary number of transaction per block
+# this is chosen by the blockm iner, and can vary between blocks!
+
+while len(txnBuffer) > 0:
+    bufferStartSize = len(txnBuffer)
+    
+    ## Gather a set of valid trnsactions for inclusion
+    txnList = []
+    while (len(txnBuffer) > 0 ) & (len(txnList) < blockSizeLimit):
+        newTxn = txnBuffer.pop()
+        validTxn = isValid(newTxn, state) # returns false if txn is invalid
+        
+        if validTxn: #if we got valid state, not false
+            txnList.append(newTxn)
+            state = updateState(newTxn,state)
+        else:
+            print("ignored transaction")
+            sys.stdout.flush()    
+            continue # this was an invalid transaction, ignore it and move on
+    
+    
+    ## Make a block    
+    myBlock = makeBlock(txnList,chain)    
+    chain.append(myBlock)
+    
+    print("The number is ", chain[0])
