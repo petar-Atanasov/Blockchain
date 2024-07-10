@@ -90,30 +90,29 @@ def makeBlock(txns, chain):
     parentBlock = chain[-1]
     parentHash = parentBlock['hash']
     blockNumber = parentBlock['contents']['blockNumber'] + 1
-    txnCount = len(txns)
     blockContents = {
         'blockNumber': blockNumber,
         'parentHash': parentHash,
-        'txnCount':len(txns),
-        'txns':txns
+        'txnCount': len(txns),
+        'txns': txns
          }
     blockHash = hashMe(blockContents)
     block = {
         'hash': blockHash,
-        'contents':blockContents
+        'contents': blockContents
     }
     
     return block
+#sumilate transaction buffer 
+txnBuffer = [{'Alice': -3, 'Bob': 3}, {'Alice': 4, 'Bob': 4}, {'Alice': -1, 'Bob': 1}] *LINK - 
 
 blockSizeLimit = 5 # Arbitnary number of transaction per block
 # this is chosen by the blockm iner, and can vary between blocks!
 
-while len(txnBuffer) > 0:
-    bufferStartSize = len(txnBuffer)
-    
-    ## Gather a set of valid trnsactions for inclusion
+while txnBuffer:
+    # Gather a set of valid trnsactions for inclusion
     txnList = []
-    while (len(txnBuffer) > 0 ) & (len(txnList) < blockSizeLimit):
+    while txnBuffer & len(txnList) < blockSizeLimit:
         newTxn = txnBuffer.pop()
         validTxn = isValid(newTxn, state) # returns false if txn is invalid
         
@@ -123,11 +122,12 @@ while len(txnBuffer) > 0:
         else:
             print("ignored transaction")
             sys.stdout.flush()    
-            continue # this was an invalid transaction, ignore it and move on
+            
     
     
     ## Make a block    
-    myBlock = makeBlock(txnList,chain)    
-    chain.append(myBlock)
+    if txnList:
+        myBlock = makeBlock(txnList,chain)    
+        chain.append(myBlock)
     
     print("The number is ", chain[0])
