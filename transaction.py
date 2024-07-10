@@ -130,4 +130,35 @@ while txnBuffer:
         myBlock = makeBlock(txnList,chain)    
         chain.append(myBlock)
     
-    print("The number is ", chain[0])
+   #!SECTION
+   # print("The number is ", state)
+   
+   # helper function that makes sure that the block contents match the hash
+def checkBlockHash(block):
+    # raise an exception if the hash does not match the block
+    expectedHash = hashMe(block['contents'])
+    
+    if block['hash'] != expectedHash:
+        raise Exception('Hash does not match the contents of the cloack %s' % block['contents']['blockNumber'])
+    return
+
+#Checks the validity of a block,
+# return the updated state if the block is valid, and raise an error otherwise.
+
+def checkBlockValidity(block, parent, state):
+    #We want to check the following:
+    # 1. Each of the transactions are valid updates to the system state
+    # 2. Block hash is valid for the block contents
+    # 3. Block number increments the parent block number by 1
+    # 4. Accurately references the parent block's hash
+    parentNumber = parent['contents']['blockNumber']
+    parentHash = parent['hash']
+    blockNumber = block['contents']['blockNumber']
+    
+    # Check transaction validity:
+    # throw and error if an invalid transaction was found 
+    for txn in block['contents']['txns']:
+        if isValid(txn,state):
+            state = updateState(txn,state)
+        else:
+            raise Exception('Invalid transaction in the block %s: %s' % (blockNumber, txn))    
