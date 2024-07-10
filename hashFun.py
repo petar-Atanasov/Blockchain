@@ -1,4 +1,4 @@
-import hashlib, json, sys
+import hashlib, json
 
 def hashMe(msg=""):
     # this is a helper function that wraps our hashing algorithm
