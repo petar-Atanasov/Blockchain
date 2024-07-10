@@ -1,5 +1,8 @@
+import hashlib
+import json
 import random
 random.seed(0)
+from hashFun import hashMe
 
 def makeTransaction(maxValue = 3):
     
@@ -54,3 +57,27 @@ print(isValid({'Alice':-4, 'Bob':3},state)) # cannot create or destroy tokens!
 print(isValid({'Alice':-6, 'Bob':6},state)) # we also cannot overdraft out account.
 print(isValid({'Alice':-4, 'Bob':2,'Lisa':2},state)) # creating new users is valid
 print(isValid({'Alice':-4, 'Bob':3, 'Lisa':2},state)) # but the same rules still apply!
+
+state = {'Alice':50, 'Bob':50} # define the initial state
+
+# create the genesis block transaction and contents
+genesisBlockTxns = [state]
+genesisBlockContents = {
+    'blockNumber':0,
+    'parentHash':None,
+    'txnCount':1,
+    'txns':genesisBlockTxns
+    }
+# generate the hash for the genesis block with callback
+genesisHash = hashMe(genesisBlockContents)
+
+#assemble the genesis block
+genesisBlock = {
+    'hash': genesisHash,
+    'contents':genesisBlockContents
+    }
+
+# convert the genesis block to sorted JSON format
+genesisBlockStr = json.dumps(genesisBlock,sort_keys=True)
+
+print(genesisBlockStr)
