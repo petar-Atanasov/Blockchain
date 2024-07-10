@@ -104,7 +104,7 @@ def makeBlock(txns, chain):
     
     return block
 #sumilate transaction buffer 
-txnBuffer = [{'Alice': -3, 'Bob': 3}, {'Alice': 4, 'Bob': 4}, {'Alice': -1, 'Bob': 1}] *LINK - 
+txnBuffer = [{'Alice': -3, 'Bob': 3}, {'Alice': 4, 'Bob': 4}, {'Alice': -1, 'Bob': 1}] * 10
 
 blockSizeLimit = 5 # Arbitnary number of transaction per block
 # this is chosen by the blockm iner, and can vary between blocks!
