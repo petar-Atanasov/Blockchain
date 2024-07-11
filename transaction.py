@@ -209,7 +209,7 @@ def checkChain(chain):
         # the reference to the parent block's hash
         # the validity of the block number
         
-    for block in chain[1]:
+    for block in chain[1:]:
         state = checkBlockValidity(block, parent, state)
         parent = block
         
