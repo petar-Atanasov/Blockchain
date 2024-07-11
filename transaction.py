@@ -1,4 +1,3 @@
-import hashlib
 import json
 import random
 import sys
@@ -161,4 +160,15 @@ def checkBlockValidity(block, parent, state):
         if isValid(txn,state):
             state = updateState(txn,state)
         else:
-            raise Exception('Invalid transaction in the block %s: %s' % (blockNumber, txn))    
+            raise Exception('Invalid transaction in the block %s: %s' % (blockNumber, txn)) 
+        
+    checkBlockHash(block) # check the hash integrity, raises an error if inaccurate
+    
+    if blockNumber !=(parentNumber + 1):
+        raise Exception('Hash does not match contents of block %s' % blockNumber)
+    
+    if block['contents'][parentHash] != parentHash:
+        raise Exception('Parent hash not accurate at block %s' % blockNumber)
+    
+    return state
+
