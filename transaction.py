@@ -139,7 +139,6 @@ def checkBlockHash(block):
     
     if block['hash'] != expectedHash:
         raise Exception('Hash does not match the contents of the cloack %s' % block['contents']['blockNumber'])
-    return
 
 #Checks the validity of a block,
 # return the updated state if the block is valid, and raise an error otherwise.
@@ -160,15 +159,61 @@ def checkBlockValidity(block, parent, state):
         if isValid(txn,state):
             state = updateState(txn,state)
         else:
-            raise Exception('Invalid transaction in the block %s: %s' % (blockNumber, txn)) 
+            raise Exception(f'Invalid transaction in the block {blockNumber}: {txn}') 
         
     checkBlockHash(block) # check the hash integrity, raises an error if inaccurate
     
     if blockNumber !=(parentNumber + 1):
-        raise Exception('Hash does not match contents of block %s' % blockNumber)
+        raise Exception(f'Hash does not match contents of block {blockNumber}')
     
     if block['contents'][parentHash] != parentHash:
-        raise Exception('Parent hash not accurate at block %s' % blockNumber)
+        raise Exception(f'Parent hash not accurate at block {blockNumber}')
     
     return state
 
+def checkChain(chain):
+    #!SECTION
+    # Work through the chain from the genesis block (which gets spectial treatment),
+    # checking that all thransactions are internally valid,
+    # that the transcation do not cause an overdraft,
+    # and that the block are linked by their hashes.
+    
+    #NOTE
+    # This returns the state as a dictionary of accounts and balances,
+    # or returns false if an error was detected
+    
+    ##NOTE - Data input processing:
+    # make sure that our chain is a list of dicts
+    if isinstance(chain,str):
+        try:
+            chain = json.loads(chain)
+            assert isinstance(chain,list)
+        except: #This is a catch-all admittedly crude
+            return False
+    elif not isinstance(chain, list):
+        return False
+    
+    state = {}
+    ##!SECTION Prime the pump by checking the genesis block
+    # We want to check the following:
+    # 1. Each of the transactions are valid updates to the system state
+    # 2. Block hash is valid for the block contents
+    
+    for txn in chain[0]['contents']['txns']:
+        state = updateState(txn,state)
+    checkBlockHash(chain[0])
+    parent = chain[0]
+    
+    ##!SECTION Checking subsequent blocks:
+    # These additionally need to check
+        # the reference to the parent block's hash
+        # the validity of the block number
+        
+    for block in chain[1]:
+        state = checkBlockValidity(block, parent, state)
+        parent = block
+        
+    return state
+
+checkChain(chain)           
+            
