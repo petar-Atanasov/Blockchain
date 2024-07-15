@@ -88,23 +88,6 @@ genesisBlockStr = json.dumps(genesisBlock, sort_keys=True)
 
 chain = [genesisBlock]
 
-def makeBlock(txns, chain):
-    parentBlock = chain[-1]
-    parentHash = parentBlock['hash']
-    blockNumber = parentBlock['contents']['blockNumber'] + 1
-    blockContents = {
-        'blockNumber': blockNumber,
-        'parentHash': parentHash,
-        'txnCount': len(txns),
-        'txns': txns
-         }
-    blockHash = hashMe(blockContents)
-    block = {
-        'hash': blockHash,
-        'contents': blockContents
-    }
-    
-    return block
 #sumilate transaction buffer 
 txnBuffer = [
     {'Alice': -3, 'Bob': 3},
@@ -238,3 +221,7 @@ checkChain(chain)
 chainAsText = json.dumps(chain,sort_keys=True)
 checkChain(chainAsText)
 print((str)(chainAsText))
+
+
+##!SECTION
+#Blockchain Architechure 
