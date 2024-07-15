@@ -126,7 +126,7 @@ while txnBuffer:
             txnList.append(newTxn)
             state = updateState(newTxn,state)
         else:
-            print(f"ignored transaction {newTxn} due to validation failure.") 
+            #print(f"ignored transaction {newTxn} due to validation failure.") 
             sys.stdout.flush()
     
     
@@ -162,14 +162,14 @@ def checkBlockValidity(block, parent, state):
     
     # Check transaction validity:
     # throw and error if an invalid transaction was found 
-    print(f"Before transaction: {state}")
-    print(f"Current state before processing clock {block['contents']['blockNumber']}: {state}")
+   # print(f"Before transaction: {state}")
+    #print(f"Current state before processing clock {block['contents']['blockNumber']}: {state}")
     try:
         for txn in block['contents']['txns']:
-            print(f"Processing transaction {txn} with state {state}")
+            #print(f"Processing transaction {txn} with state {state}")
             if isValid(txn,state):
                 state = updateState(txn,state)
-                print(f"After transaction {txn}: , the state is {state}")
+                #print(f"After transaction {txn}: , the state is {state}")
             else:
                 raise Exception(f'Invalid transaction in the block {block["contents"]["blockNumber"]}: {txn}') 
         
@@ -227,10 +227,14 @@ def checkChain(chain):
         # the validity of the block number
         
     for block in chain[1:]:
-        print(f"Validating block {block['contents']['blockNumber']} with parent block {parent['contents']['blockNumber']}")
+        #print(f"Validating block {block['contents']['blockNumber']} with parent block {parent['contents']['blockNumber']}")
         state = checkBlockValidity(block, parent, state)
         parent = block
         
     return state
 
 checkChain(chain)           
+
+chainAsText = json.dumps(chain,sort_keys=True)
+checkChain(chainAsText)
+print((str)(chainAsText))
