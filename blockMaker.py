@@ -1,7 +1,8 @@
 from hashFun import hashMe
 
 class BlockMaker:
-    def makeBlock(self, txns, chain):
+    @staticmethod
+    def makeBlock(txns, chain):
         parentBlock = chain[-1]
         parentHash = parentBlock['hash']
         blockNumber = parentBlock['contents']['blockNumber'] + 1
