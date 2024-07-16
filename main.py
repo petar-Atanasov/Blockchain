@@ -1,3 +1,4 @@
+import json
 import sys
 
 # from blockChecker import BlockCheker
@@ -13,14 +14,7 @@ class Main:
     def __init__(self):
         self.state = {"Alice": 50, "Bob": 50}
         self.chain = self.createGenesisBlock()
-
-    # NOTE - to delete if not needed
-    # print(isValid({'Alice':-3, 'Bob':3},state))
-    # print(isValid({'Alice':-4, 'Bob':3},state)) # cannot create or destroy tokens!
-    # print(isValid({'Alice':-6, 'Bob':6},state)) # we also cannot overdraft out account.
-    # print(isValid({'Alice':-4, 'Bob':2,'Lisa':2},state)) # creating new users is valid
-    # print(isValid({'Alice':-4, 'Bob':3, 'Lisa':2},state)) # but the same rules still apply!
-
+    
     def createGenesisBlock(self):
         # create the genesis block transaction and contents
         genesisBlockTxns = [self.state.copy()]  # copy yhe state
@@ -41,7 +35,7 @@ class Main:
 
         # NOTE - to delete if not needed
         # convert the genesis block to sorted JSON format
-        # genesisBlockStr = json.dumps(genesisBlock, sort_keys=True)
+        genesisBlockStr = json.dumps(genesisBlock, sort_keys=True)
 
         #!SECTION
         # print(genesisBlockStr)
