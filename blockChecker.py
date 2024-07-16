@@ -2,6 +2,7 @@ import copy
 
 from hashFun import hashMe 
 from stateUpdater import StateUpdater
+
 class BlockCheker:
     @staticmethod
        # helper function that makes sure that the block contents match the hash
