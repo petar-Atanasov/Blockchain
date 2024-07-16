@@ -1,5 +1,7 @@
 import json
+
 from blockChecker import BlockCheker
+from stateUpdater import StateUpdater
 
 class ChainCheker:
     @staticmethod
@@ -32,7 +34,7 @@ class ChainCheker:
     # 2. Block hash is valid for the block contents
     
         for txn in chain[0]['contents']['txns']:
-            state = BlockCheker.updateState(txn,state)
+            state = StateUpdater.updateState(txn,state)
         BlockCheker.checkBlockHash(chain[0])
         parent = chain[0]
     
