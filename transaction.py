@@ -19,6 +19,3 @@ class Transaction:
 
     def generateTransactionBuffer(size = 30, maxValue = 3):
         return [Transaction.makeTransaction(maxValue) for _ in range(size)]
-
-##!SECTION
-#Blockchain Architechure 
