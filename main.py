@@ -1,17 +1,17 @@
 import sys
 
-
 # from blockChecker import BlockCheker
 from blockMaker import BlockMaker
 from chainChecker import ChainCheker
 from hashFun import hashMe
 from transaction import Transaction
 from stateUpdater import StateUpdater
+from nodeSimulator import NodeSimulator
 
 
 class Main:
     def __init__(self):
-        self.state = {"Alice": 5, "Bob": 5}
+        self.state = {"Alice": 50, "Bob": 50}
         self.chain = self.createGenesisBlock()
 
     # NOTE - to delete if not needed
@@ -34,7 +34,10 @@ class Main:
         genesisHash = hashMe(genesisBlockContents)
 
         # assemble the genesis block
-        genesisBlock = {"hash": genesisHash, "contents": genesisBlockContents}
+        genesisBlock = {
+            "hash": genesisHash,
+            "contents": genesisBlockContents
+            }
 
         # NOTE - to delete if not needed
         # convert the genesis block to sorted JSON format
@@ -56,28 +59,31 @@ class Main:
             while txnBuffer and len(txnList) < blockSizeLimit:
                 newTxn = txnBuffer.pop(0)
                 validTxn = StateUpdater.isValid(
-                newTxn, self.state
-            )  # returns false if txn is invalid    
+                    newTxn, self.state
+                )  # returns false if txn is invalid
 
             if validTxn:  # if we got valid state, not false
                 txnList.append(newTxn)
                 self.state = StateUpdater.updateState(newTxn, self.state)
             else:
-                # print(f"ignored transaction {newTxn} due to validation failure.")
+                print(f"ignored transaction {newTxn} due to validation failure.")
                 sys.stdout.flush()
 
-        ## Make a block
+            ## Make a block
             if txnList:
                 myBlock = BlockMaker.makeBlock(txnList, self.chain)
                 self.chain.append(myBlock)
-
 
     def run(self):
         txnBuffer = Transaction.generateTransactionBuffer()
         self.simulateTransactions(txnBuffer)
         ChainCheker.checkChain(self.chain)
-        
+        self.simulateNode()
+    
+    def simulateNode(self):
+        self.chain, self.state =  NodeSimulator.simulateNode(self.chain, self.state)  
+
+
 if __name__ == "__main__":
     app = Main()
-    app.run()   
-    
+    app.run()
